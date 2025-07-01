@@ -1,0 +1,21 @@
+[
+  {
+    "id": "user-1",
+    "name": "Alice Johnson",
+    "email": "alice.johnson@example.com",
+    "createdAt": "2024-12-01T10:15:30.000Z"
+  },
+  {
+    "id": "user-2",
+    "name": "Bob Smith",
+    "email": "bob.smith@example.com",
+    "createdAt": "2025-01-20T08:45:00.000Z"
+  },
+  {
+    "id": "1751357981849",
+    "name": "cris",
+    "email": "cris@gmail.com",
+    "password": "$2b$10$O8h2GWHjkYVssS0UwNSDmOIhAXNc87DV2uf6bKT/Ec/ugmPM4IbsO",
+    "createdAt": "2025-07-01T08:19:41.849Z"
+  }
+]
