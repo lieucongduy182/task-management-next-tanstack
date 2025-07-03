@@ -12,7 +12,6 @@ interface TaskListProps {
 }
 
 export function TaskList({ tasks }: TaskListProps) {
-  console.log('🚀 [Debug] ~ TaskList.tsx:15 ~ TaskList ~ tasks:', tasks)
   const { updateTask, deleteTask, isUpdating, isDeleting } = useTasks()
   const [editingTask, setEditingTask] = useState<Task | null>(null)
 
@@ -55,7 +54,7 @@ export function TaskList({ tasks }: TaskListProps) {
     }
   }
 
-  if (tasks.length === 0) {
+  if (!tasks.length) {
     return (
       <div className="text-center py-8">
         <p className="text-gray-500">No tasks yet. Create your first task!</p>

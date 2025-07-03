@@ -1,7 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import React, { useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useTasks } from '@/hooks/useTasks'
 import { Navigation } from '@/components/Navigation'
@@ -10,18 +9,13 @@ import { TaskList } from '@/components/TaskList'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { TaskFormData } from '@/lib/validation'
+import { Task } from '@/types'
 
 export default function DashboardPage() {
-  const router = useRouter()
   const { isAuthenticated } = useAuth()
-  const { tasks, isLoading, createTask, isCreating } = useTasks()
+  const { tasks: _tasks, isLoading, createTask, isCreating } = useTasks()
+  const tasks: Task[] = _tasks || []
   const [showCreateModal, setShowCreateModal] = useState(false)
-
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      router.push('/login')
-    }
-  }, [isAuthenticated, router])
 
   const handleCreateTask = (data: TaskFormData) => {
     createTask(data, {
@@ -57,8 +51,7 @@ export default function DashboardPage() {
             </Button>
           </div>
 
-          {/* Filter Buttons */}
-          <div className="flex space-x-2 mb-6">
+          <div className="flex flex-wrap gap-1 mb-6">
             {['all', 'todo', 'in-progress', 'completed'].map((status) => (
               <Button
                 key={status}

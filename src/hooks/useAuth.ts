@@ -3,13 +3,14 @@ import axios from 'axios'
 import { queryKeys } from '../lib/queryClient'
 import { LoginCredentials, RegisterCredentials, User } from '../types'
 import { redirect } from 'next/navigation'
+import Cookies from 'js-cookie'
 
 const api = axios.create({
   baseURL: '/api',
 })
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token')
+  const token = Cookies.get('token')
   if (token) {
     config.headers['Authorization'] = `Bearer ${token}`
   }
@@ -26,8 +27,9 @@ export function useAuth() {
       return response.data
     },
     onSuccess: (data) => {
-      localStorage.setItem('token', data.token)
       localStorage.setItem('user', JSON.stringify(data.user))
+      Cookies.set('token', data.token, { expires: 7 })
+
       queryClient.setQueryData(queryKeys.users, data.user)
     },
   })
@@ -38,15 +40,15 @@ export function useAuth() {
       return response.data
     },
     onSuccess: (data) => {
-      localStorage.setItem('token', data.token)
       localStorage.setItem('user', JSON.stringify(data.user))
+      Cookies.set('token', data.token, { expires: 7 })
       queryClient.setQueryData(queryKeys.users, data.user)
     },
   })
 
   const logout = () => {
-    localStorage.removeItem('token')
     localStorage.removeItem('user')
+    Cookies.remove('token')
     queryClient.removeQueries({ queryKey: queryKeys.users })
 
     redirect('/login')
@@ -62,7 +64,7 @@ export function useAuth() {
   }
 
   const isAuthenticated = (): boolean => {
-    return !!localStorage.getItem('token')
+    return !!Cookies.get('token')
   }
 
   return {

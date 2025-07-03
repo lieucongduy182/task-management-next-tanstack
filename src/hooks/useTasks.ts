@@ -3,13 +3,14 @@ import axios from 'axios'
 import { Task, UpdateTaskData } from '@/types'
 import { queryKeys } from '@/lib/queryClient'
 import { TaskFormData } from '@/lib/validation'
+import Cookies from 'js-cookie'
 
 const api = axios.create({
   baseURL: '/api',
 })
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token')
+  const token = Cookies.get('token')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
@@ -31,13 +32,13 @@ export function useTasks() {
         throw error
       }
     },
-    enabled: !!localStorage.getItem('token'),
+    enabled: !!Cookies.get('token'),
   })
 
   const createTaskMutation = useMutation({
     mutationFn: async (taskData: TaskFormData) => {
       const response = await api.post('/tasks', taskData)
-      return response.data.task as Task
+      return response.data as Task
     },
     onSuccess: (newTask) => {
       queryClient.setQueryData(queryKeys.tasks, (oldTasks: Task[] = []) => [
@@ -50,7 +51,7 @@ export function useTasks() {
   const updateTaskMutation = useMutation({
     mutationFn: async ({ id, ...updates }: UpdateTaskData) => {
       const response = await api.put(`/tasks/${id}`, updates)
-      return response.data.task as Task
+      return response.data as Task
     },
     onSuccess: (updatedTask) => {
       queryClient.setQueryData(queryKeys.tasks, (oldTasks: Task[] = []) =>

@@ -17,6 +17,12 @@ export interface Task {
   updatedAt: string
 }
 
+export interface TaskUpdateEvent {
+  type: 'TASK_CREATED' | 'TASK_UPDATED' | 'TASK_DELETED'
+  task?: Task
+  taskId?: string
+}
+
 export interface LoginCredentials {
   email: string
   password: string

@@ -80,8 +80,10 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  payload: { params: { id: string } },
 ) {
+  const { params } = payload
+  const { id } = await params
   try {
     const token = getTokenFromRequest(request)
     if (!token) {
@@ -96,7 +98,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
-    const existingTask = await getTaskById(params.id)
+    const existingTask = await getTaskById(id)
     if (!existingTask) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 })
     }
@@ -105,7 +107,13 @@ export async function DELETE(
       return NextResponse.json({ error: 'Access denied' }, { status: 403 })
     }
 
-    await deleteTask(params.id)
+    const result = await deleteTask(id)
+    if (!result) {
+      return NextResponse.json(
+        { error: 'Failed to delete task' },
+        { status: 500 },
+      )
+    }
     return NextResponse.json({ message: 'Task deleted successfully' })
   } catch (error) {
     console.error('Delete task error:', error)

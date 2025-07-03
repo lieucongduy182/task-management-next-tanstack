@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { User } from '@/types'
-import { verify } from 'crypto'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret_key'
 
