@@ -42,6 +42,11 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
       },
     )
 
+    socketInstance.on('connect_error', (err) => {
+      console.error('Socket connection error:', err)
+      setIsConnected(false)
+    })
+
     socketInstance.on('connect', () => {
       console.log('Connected to server')
       setIsConnected(true)

@@ -1,27 +1,23 @@
 import { Server as NetServer } from 'http'
 import { Server as ServerIO } from 'socket.io'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextRequest } from 'next/server'
 
-export interface NextApiResponseServerIO extends NextApiResponse {
-  socket: {
-    server: NetServer & {
-      io?: ServerIO
-    }
-  }
+declare global {
+  var io: ServerIO | undefined
 }
 
-export default function SocketHandler(
-  req: NextApiRequest,
-  res: NextApiResponseServerIO,
-) {
-  if (!res.socket.server.io) {
+export async function GET(req: NextRequest) {
+  if (!global.io) {
     console.log('Starting Socket.io server...')
-    const io = new ServerIO(res.socket.server, {
+
+    const httpServer = new NetServer()
+    const io = new ServerIO(httpServer, {
       cors: {
         origin:
           process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000',
         methods: ['GET', 'POST'],
       },
+      path: '/api/socket',
     })
 
     // Handle socket connections
@@ -60,10 +56,14 @@ export default function SocketHandler(
       })
     })
 
-    res.socket.server.io = io
-  } else {
-    console.log('Socket.io server already running')
+    global.io = io
+
+    httpServer.listen(3001, () => {
+      console.log('Socket.io server listening on port 3001')
+    })
   }
 
-  res.end()
+  return new Response('Socket.io server is running', {
+    status: 200,
+  })
 }

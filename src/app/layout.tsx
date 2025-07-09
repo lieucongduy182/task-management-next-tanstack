@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import './globals.css'
+import { SocketProvider } from '@/lib/socket-context'
 
 export default function RootLayout({
   children,
@@ -25,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-gray-50">
         <QueryClientProvider client={queryClient}>
-          {children}
+          <SocketProvider>{children}</SocketProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </body>
